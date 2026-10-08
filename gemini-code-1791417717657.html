@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Srinika's Sweet 16 - The Winter She Turned Sixteen</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cormorant Garamond, Great Vibes, Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,600&family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti Library for Petal/Confetti Effect -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sage: {
+                            50: '#f0f4f8',
+                            100: '#e1ecf4',
+                            200: '#b3c7e0',
+                            300: '#85a3c2',
+                            600: '#57728f',
+                            700: '#4a647d',
+                            800: '#3b4d5e',
+                        },
+                        canva: {
+                            bg: '#fcfbfa',
+                            green: '#6888a8',
+                            darkgreen: '#4a647d',
+                            border: '#b3c7e0'
+                        }
+                    },
+                    fontFamily: {
+                        cursive: ['"Great Vibes"', 'cursive'],
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fcfbfa;
+            color: #3b4d5e;
+            font-family: 'Cormorant Garamond', serif;
+        }
+        .bg-canva-texture {
+            background-color: #fcfbfa;
+            background-image: radial-gradient(#d0dbeb 0.75px, transparent 0.75px), radial-gradient(#d0dbeb 0.75px, #fcfbfa 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+        .card-shadow {
+            box-shadow: 0 20px 40px -10px rgba(59, 77, 94, 0.15);
+        }
+        .screen {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+        }
+        .screen.active {
+            display: flex;
+            opacity: 1;
+        }
+        .envelope-flap {
+            transition: transform 0.8s ease-in-out;
+            transform-origin: top;
+            pointer-events: none;
+        }
+        .envelope-open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-canva-texture min-h-screen flex flex-col justify-between overflow-x-hidden text-gray-800">
+
+    <!-- NAVIGATION BAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-[#fcfbfa]/90 backdrop-blur-md border-b border-[#b3c7e0]/40 py-2 px-4 shadow-sm">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <span onclick="goToScreen(1)" class="font-cursive text-2xl text-[#4a647d] cursor-pointer hover:opacity-80">
+                Srinika's Sweet 16
+            </span>
+            <div class="flex space-x-1 sm:space-x-2 text-xs sm:text-sm font-sans">
+                <button onclick="goToScreen(1)" id="nav-btn-1" class="px-2.5 py-1 rounded-full transition bg-[#4a647d] text-white">1. Intro</button>
+                <button onclick="goToScreen(2)" id="nav-btn-2" class="px-2.5 py-1 rounded-full transition text-[#4a647d] hover:bg-[#e1ecf4]">2. Invitation</button>
+                <button onclick="goToScreen(3)" id="nav-btn-3" class="px-2.5 py-1 rounded-full transition text-[#4a647d] hover:bg-[#e1ecf4]">3. Details</button>
+                <button onclick="goToScreen(4)" id="nav-btn-4" class="px-2.5 py-1 rounded-full transition text-[#4a647d] hover:bg-[#e1ecf4]">4. RSVP</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow pt-20 pb-12 px-4 flex items-center justify-center">
+
+        <!-- ================= SCREEN 1: ENVELOPE INTRO ================= -->
+        <div id="screen-1" class="screen active flex-col items-center justify-center max-w-2xl w-full mx-auto text-center py-6">
+            <div class="mb-4">
+                <h1 class="font-cursive text-5xl sm:text-7xl text-[#4a647d] tracking-wide drop-shadow-sm">You are Invited!</h1>
+            </div>
+
+            <div class="relative p-8 sm:p-12 bg-white/90 backdrop-blur-sm rounded-[3rem] border-4 border-dashed border-[#b3c7e0] card-shadow my-2 w-full flex flex-col items-center justify-center">
+                
+                <div id="envelope-box" class="relative w-72 sm:w-96 h-48 sm:h-60 bg-[#6888a8] rounded-xl shadow-2xl cursor-pointer envelope-wrapper flex items-center justify-center p-4 border border-[#85a3c2] transition transform hover:scale-105 duration-300">
+                    <div id="envelope-flap" class="absolute top-0 left-0 w-full h-1/2 bg-[#57728f] rounded-t-xl z-20 shadow-md envelope-flap" style="clip-path: polygon(0 0, 50% 100%, 100% 0);"></div>
+                    <div class="absolute inset-0 bg-[#6888a8] rounded-xl z-10 pointer-events-none" style="clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 0, 50% 55%);"></div>
+                    <div class="absolute w-11/12 h-4/5 bg-[#fcfbfa] rounded-lg shadow-inner z-0 flex flex-col items-center justify-center p-3 text-center border border-[#e1ecf4] pointer-events-none">
+                        <p class="font-cursive text-2xl text-[#4a647d]">Srinika's Sweet 16</p>
+                        <p class="font-serif text-xs text-gray-500 uppercase tracking-widest mt-1">December 12, 2026</p>
+                    </div>
+                    <div class="absolute bottom-3 z-30 text-center pointer-events-none">
+                        <span class="inline-block font-serif italic text-base sm:text-lg text-white underline underline-offset-4 drop-shadow-md">
+                            Click to Open.
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-xs font-serif text-[#57728f]">
+                    Tap or click the envelope to open
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCREEN 2: INVITATION PORTRAIT IMAGE ================= -->
+        <div id="screen-2" class="screen flex-col items-center justify-center max-w-xl w-full mx-auto py-4">
+            <div class="w-full flex flex-col items-center space-y-4">
+                
+                <!-- Larger Centered Image Frame -->
+                <div class="w-full flex justify-center">
+                    <img src="portrait.jpg" alt="Srinika Sweet 16 Portrait" class="block w-full max-w-lg h-auto object-contain mx-auto rounded-xl shadow-xl">
+                </div>
+
+                <!-- Navigation Footer -->
+                <div class="w-full flex justify-between items-center px-2 pt-1">
+                    <button onclick="goToScreen(1)" class="font-serif text-base text-[#4a647d] hover:underline bg-white/80 px-4 py-2 rounded-full shadow-sm">
+                        &larr; Back
+                    </button>
+                    <button onclick="goToScreen(3)" class="bg-[#4a647d] text-white px-6 py-2 rounded-full font-serif text-base hover:bg-[#3b4d5e] transition shadow-md">
+                        View Details &rarr;
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCREEN 3: DETAILS MESSAGE ================= -->
+        <div id="screen-3" class="screen flex-col items-center justify-center max-w-2xl w-full mx-auto py-6">
+            <div class="bg-white card-shadow rounded-2xl p-8 sm:p-12 w-full relative border border-[#e1ecf4] text-center space-y-8">
+                
+                <!-- Decorative Top Badge -->
+                <div class="inline-block px-8 py-3 bg-[#e1ecf4]/60 border-2 border-dashed border-[#b3c7e0] rounded-full">
+                    <span class="font-cursive text-4xl sm:text-5xl text-[#4a647d]">You are Invited</span>
+                </div>
+
+                <!-- Welcome Message -->
+                <div class="space-y-4">
+                    <h3 class="font-cursive text-5xl sm:text-6xl text-[#4a647d]">Welcome</h3>
+                    <p class="font-serif text-xl sm:text-2xl text-[#3b4d5e] leading-relaxed max-w-lg mx-auto">
+                        We are thrilled to have everyone here as we mark this special milestone. Having you in Srinika's life means the world to us and to her! Thank you for helping us celebrate her Sweet 16!
+                    </p>
+                </div>
+
+                <hr class="border-[#e1ecf4] my-4 w-3/4 mx-auto">
+
+                <!-- Time and Venue Section -->
+                <div class="space-y-2">
+                    <h4 class="font-cursive text-4xl sm:text-5xl text-[#4a647d]">Time and Venue</h4>
+                    <p class="font-serif text-lg sm:text-xl text-gray-700 leading-relaxed max-w-md mx-auto">
+                        Please join us at <strong class="text-[#3b4d5e]">43155 Main St, Suite 208<br>Novi, MI 48375</strong> on December 12th from <strong class="text-[#3b4d5e]">5:30 to 10:00 PM</strong>.
+                    </p>
+                </div>
+
+                <hr class="border-[#e1ecf4] my-4 w-3/4 mx-auto">
+
+                <!-- Dress Code Section -->
+                <div class="space-y-3">
+                    <h4 class="font-cursive text-4xl sm:text-5xl text-[#4a647d]">Dress Code</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto pt-1 font-serif text-lg sm:text-xl text-gray-700">
+                        <div class="bg-[#f0f4f8] p-3 rounded-xl border border-[#b3c7e0]">
+                            <span class="block font-sans text-xs text-[#4a647d] uppercase tracking-wider font-semibold mb-1">Men</span>
+                            Formal Wear
+                        </div>
+                        <div class="bg-[#f0f4f8] p-3 rounded-xl border border-[#b3c7e0]">
+                            <span class="block font-sans text-xs text-[#4a647d] uppercase tracking-wider font-semibold mb-1">Women</span>
+                            Cocktail Indian Attire
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Footer -->
+                <div class="flex justify-between items-center pt-6 border-t border-[#e1ecf4] mt-6">
+                    <button onclick="goToScreen(2)" class="font-serif text-sm text-[#4a647d] hover:underline">
+                        &larr; Back to Invitation
+                    </button>
+                    <button onclick="goToScreen(4)" class="bg-[#4a647d] text-white px-8 py-3 rounded-full font-serif text-lg hover:bg-[#3b4d5e] transition shadow-md">
+                        Next: RSVP &rarr;
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCREEN 4: RSVP FORM ================= -->
+        <div id="screen-4" class="screen flex-col items-center justify-center max-w-2xl w-full mx-auto py-6">
+            <div class="bg-white card-shadow rounded-2xl p-6 sm:p-10 w-full relative border border-[#e1ecf4]">
+                
+                <div class="text-center mb-8 relative">
+                    <h2 class="font-cursive text-5xl sm:text-6xl text-[#4a647d] mb-1">Kindly Respond</h2>
+                    <p class="font-serif italic text-lg text-gray-600">by November 14, 2026</p>
+                </div>
+
+                <form id="rsvp-form" onsubmit="handleRSVP(event)" class="space-y-5">
+                    <div>
+                        <label class="block font-serif text-lg text-[#3b4d5e] mb-1" for="guest-name">Full Name(s) *</label>
+                        <input type="text" id="guest-name" required class="w-full px-4 py-2.5 rounded-xl border border-[#b3c7e0] focus:ring-2 focus:ring-[#6888a8] font-serif text-lg bg-[#fcfbfa]" placeholder="e.g. The Sharma Family">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-serif text-lg text-[#3b4d5e] mb-1" for="guest-email">Email Address *</label>
+                            <input type="email" id="guest-email" required class="w-full px-4 py-2.5 rounded-xl border border-[#b3c7e0] focus:ring-2 focus:ring-[#6888a8] font-serif text-lg bg-[#fcfbfa]" placeholder="name@example.com">
+                        </div>
+                        <div>
+                            <label class="block font-serif text-lg text-[#3b4d5e] mb-1" for="guest-count">Number of Guests *</label>
+                            <select id="guest-count" class="w-full px-4 py-2.5 rounded-xl border border-[#b3c7e0] focus:ring-2 focus:ring-[#6888a8] font-serif text-lg bg-[#fcfbfa]">
+                                <option value="1">1 Guest</option>
+                                <option value="2" selected>2 Guests</option>
+                                <option value="3">3 Guests</option>
+                                <option value="4">4 Guests</option>
+                                <option value="5">5 Guests</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-serif text-lg text-[#3b4d5e] mb-1" for="attendance">Attendance Status *</label>
+                        <select id="attendance" class="w-full px-4 py-2.5 rounded-xl border border-[#b3c7e0] focus:ring-2 focus:ring-[#6888a8] font-serif text-lg bg-[#fcfbfa]">
+                            <option value="yes">Joyfully Accepts (Attending)</option>
+                            <option value="no">Regretfully Declines (Unable to attend)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-serif text-lg text-[#3b4d5e] mb-1" for="dietary">Dietary Restrictions or Notes</label>
+                        <input type="text" id="dietary" class="w-full px-4 py-2.5 rounded-xl border border-[#b3c7e0] focus:ring-2 focus:ring-[#6888a8] font-serif text-lg bg-[#fcfbfa]" placeholder="e.g. Vegetarian, Allergies...">
+                    </div>
+
+                    <div class="text-center pt-2">
+                        <button type="submit" class="bg-[#4a647d] hover:bg-[#3b4d5e] text-white font-serif text-xl px-10 py-3 rounded-full shadow-lg transition transform hover:-translate-y-0.5">
+                            Submit RSVP here &gt;
+                        </button>
+                    </div>
+                </form>
+
+                <div id="rsvp-success" class="hidden text-center py-10 space-y-4">
+                    <div class="w-16 h-16 bg-[#e1ecf4] text-[#4a647d] rounded-full flex items-center justify-center mx-auto text-3xl">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <h3 class="font-cursive text-4xl text-[#4a647d]">Response Recorded!</h3>
+                    <p class="font-serif text-xl text-gray-700 max-w-md mx-auto" id="success-msg-text">
+                        Thank you for your response. We can't wait to celebrate Srinika's Sweet 16 with you on December 12, 2026!
+                    </p>
+                    <button onclick="resetRSVPForm()" class="mt-4 text-sm font-sans underline text-[#4a647d] hover:text-[#3b4d5e]">
+                        Submit another response
+                    </button>
+                </div>
+
+                <div class="flex justify-between items-center pt-6 border-t border-[#e1ecf4] mt-6">
+                    <button onclick="goToScreen(3)" class="font-serif text-sm text-[#4a647d] hover:underline">
+                        &larr; Back to Details
+                    </button>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#3b4d5e] text-white py-6 px-4 text-center">
+        <p class="font-cursive text-3xl">Srinika's Sweet 16</p>
+        <p class="font-serif text-xs text-[#b3c7e0] mt-1 tracking-widest">THE WINTER SHE TURNED SIXTEEN</p>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT LOGIC -->
+    <script>
+        let currentScreen = 1;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const envelopeBox = document.getElementById('envelope-box');
+            if (envelopeBox) {
+                envelopeBox.addEventListener('click', openEnvelopeTransition);
+            }
+        });
+
+        function goToScreen(screenNum) {
+            for (let i = 1; i <= 4; i++) {
+                const screenEl = document.getElementById(`screen-${i}`);
+                if (screenEl) screenEl.classList.remove('active');
+                
+                const navBtn = document.getElementById(`nav-btn-${i}`);
+                if (navBtn) {
+                    navBtn.classList.remove('bg-[#4a647d]', 'text-white');
+                    navBtn.classList.add('text-[#4a647d]');
+                }
+            }
+
+            const targetScreen = document.getElementById(`screen-${screenNum}`);
+            if (targetScreen) targetScreen.classList.add('active');
+
+            const activeNav = document.getElementById(`nav-btn-${screenNum}`);
+            if (activeNav) {
+                activeNav.classList.remove('text-[#4a647d]');
+                activeNav.classList.add('bg-[#4a647d]', 'text-white');
+            }
+
+            // Trigger confetti burst specifically when Page 2 (Invitation Image) opens
+            if (screenNum === 2) {
+                triggerConfettiBurst();
+            }
+
+            currentScreen = screenNum;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function triggerConfettiBurst() {
+            confetti({
+                particleCount: 80,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#4a647d', '#6888a8', '#b3c7e0', '#ffffff', '#e1ecf4']
+            });
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0, y: 0.7 },
+                    colors: ['#4a647d', '#6888a8', '#ffffff']
+                });
+            }, 250);
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1, y: 0.7 },
+                    colors: ['#b3c7e0', '#6888a8', '#ffffff']
+                });
+            }, 400);
+        }
+
+        function openEnvelopeTransition() {
+            const envelopeBox = document.getElementById('envelope-box');
+            const flap = document.getElementById('envelope-flap');
+
+            envelopeBox.classList.add('envelope-open');
+            flap.style.transform = 'rotateX(180deg)';
+
+            setTimeout(() => {
+                goToScreen(2);
+                setTimeout(() => {
+                    envelopeBox.classList.remove('envelope-open');
+                    flap.style.transform = 'rotateX(0deg)';
+                }, 500);
+            }, 700);
+        }
+
+        function handleRSVP(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('guest-name').value;
+            const email = document.getElementById('guest-email').value;
+            const count = document.getElementById('guest-count').value;
+            const attendance = document.getElementById('attendance').value;
+            const dietary = document.getElementById('dietary').value;
+
+            const rsvpRecord = {
+                name,
+                email,
+                count,
+                attendance,
+                dietary,
+                timestamp: new Date().toISOString()
+            };
+
+            let rsvps = JSON.parse(localStorage.getItem('srinika_sweet16_rsvps') || '[]');
+            rsvps.push(rsvpRecord);
+            localStorage.setItem('srinika_sweet16_rsvps', JSON.stringify(rsvps));
+
+            const msg = attendance === 'yes'
+                ? `Thank you, ${name}! Your joyful acceptance for ${count} guest(s) has been saved. We are so excited to celebrate with you on December 12!`
+                : `Thank you, ${name}. We have noted your regrets and will miss you at the celebration!`;
+            
+            document.getElementById('success-msg-text').innerText = msg;
+
+            document.getElementById('rsvp-form').classList.add('hidden');
+            document.getElementById('rsvp-success').classList.remove('hidden');
+        }
+
+        function resetRSVPForm() {
+            document.getElementById('rsvp-form').reset();
+            document.getElementById('rsvp-success').classList.add('hidden');
+            document.getElementById('rsvp-form').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
